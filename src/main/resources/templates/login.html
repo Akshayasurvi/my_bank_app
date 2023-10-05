@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form id="loginForm">
+        <label for="login_id">Login ID:</label><br>
+        <input type="text" id="login_id" name="login_id"><br><br>
+        
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br><br>
+        
+        <button type="button" onclick="authenticateUser()">Login</button>
+    </form>
+
+    <script>
+        function authenticateUser() {
+            const login_id = document.getElementById('login_id').value;
+            const password = document.getElementById('password').value;
+            
+            const requestBody = {
+                login_id: login_id,
+                password: password
+            };
+
+            fetch('https://qa2.sunbasedata.com/sunbase/portal/api/assignment_auth.jsp',
+     {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody),
+                mode: 'no-cors'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Authentication failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Store the token in localStorage for subsequent API calls
+                localStorage.setItem('token', data.token);
+                alert('Authentication successful!');
+                // Redirect to customer list page
+                window.location.href = '/customerList';
+            })
+            .catch(error => {
+                alert('Authentication failed: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>
+
